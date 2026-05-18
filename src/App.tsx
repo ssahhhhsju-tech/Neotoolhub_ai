@@ -1,423 +1,307 @@
 import { useState } from 'react'
+import { TextGenerator } from './components/TextGenerator'
+import { ImageGenerator } from './components/ImageGenerator'
 
-const features = [
-  {
-    title: 'AI-Powered Tools',
-    description: 'Intelligent automation and analysis tools powered by cutting-edge AI models.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-        <path d="M2 17l10 5 10-5" />
-        <path d="M2 12l10 5 10-5" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Smart Workflows',
-    description: 'Streamline your processes with customizable, automated workflows.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="16 18 22 12 16 6" />
-        <polyline points="8 6 2 12 8 18" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Real-Time Analytics',
-    description: 'Monitor performance and gain insights with live dashboards and reports.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="18" y1="20" x2="18" y2="10" />
-        <line x1="12" y1="20" x2="12" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="14" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Secure Platform',
-    description: 'Enterprise-grade security with end-to-end encryption and access controls.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-    ),
-  },
-]
+type Tab = 'text' | 'image'
 
 function App() {
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email) {
-      setSubmitted(true)
-      setEmail('')
-    }
-  }
+  const [activeTab, setActiveTab] = useState<Tab>('text')
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={styles.page}>
       {/* Header */}
-      <header
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          background: 'rgba(255, 255, 255, 0.9)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid var(--color-neutral-200)',
-        }}
-      >
-        <div
-          style={{
-            maxWidth: '1200px',
-            margin: '0 auto',
-            padding: '16px 24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 700,
-                fontSize: '16px',
-              }}
-            >
-              N
-            </div>
-            <span
-              style={{
-                fontSize: '20px',
-                fontWeight: 700,
-                color: 'var(--color-neutral-900)',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              Neotoolhub
-            </span>
+      <header style={styles.header}>
+        <div style={styles.headerInner}>
+          <div style={styles.logoGroup}>
+            <div style={styles.logo}>N</div>
+            <span style={styles.brandName}>Neotoolhub</span>
           </div>
-          <nav style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-            <a
-              href="#features"
-              style={{
-                fontSize: '14px',
-                fontWeight: 500,
-                color: 'var(--color-neutral-600)',
-                textDecoration: 'none',
-                transition: 'color 0.15s',
-              }}
-            >
-              Features
-            </a>
-            <a
-              href="#cta"
-              style={{
-                fontSize: '14px',
-                fontWeight: 500,
-                color: 'var(--color-neutral-600)',
-                textDecoration: 'none',
-                transition: 'color 0.15s',
-              }}
-            >
-              Get Started
-            </a>
+          <nav style={styles.nav}>
+            <a href="#tools" style={styles.navLink}>Tools</a>
+            <a href="#about" style={styles.navLink}>About</a>
           </nav>
         </div>
       </header>
 
       {/* Hero */}
-      <section
-        style={{
-          background: 'linear-gradient(180deg, var(--color-primary-50) 0%, var(--color-neutral-50) 100%)',
-          padding: '96px 24px 80px',
-          textAlign: 'center',
-        }}
-      >
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'inline-block',
-              padding: '6px 16px',
-              borderRadius: '9999px',
-              background: 'var(--color-primary-100)',
-              color: 'var(--color-primary-700)',
-              fontSize: '13px',
-              fontWeight: 600,
-              marginBottom: '24px',
-            }}
-          >
-            Now in Public Beta
-          </div>
-          <h1
-            style={{
-              fontSize: 'clamp(36px, 5vw, 56px)',
-              fontWeight: 800,
-              lineHeight: 1.1,
-              letterSpacing: '-0.03em',
-              color: 'var(--color-neutral-900)',
-              marginBottom: '20px',
-            }}
-          >
-            AI Tools That
+      <section style={styles.hero}>
+        <div style={styles.heroInner}>
+          <div style={styles.badge}>AI-Powered Platform</div>
+          <h1 style={styles.heroTitle}>
+            Generate Text & Images
             <br />
-            <span style={{ color: 'var(--color-primary-600)' }}>Accelerate</span> Your Work
+            <span style={styles.heroAccent}>with AI</span>
           </h1>
-          <p
-            style={{
-              fontSize: '18px',
-              lineHeight: 1.6,
-              color: 'var(--color-neutral-500)',
-              maxWidth: '600px',
-              margin: '0 auto 40px',
-            }}
-          >
-            Neotoolhub brings together intelligent automation, smart workflows, and real-time
-            analytics in one powerful platform.
+          <p style={styles.heroSubtitle}>
+            Harness the power of artificial intelligence to generate creative text and stunning
+            images. Enter a prompt and let AI do the rest.
           </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a
-              href="#cta"
+        </div>
+      </section>
+
+      {/* AI Tools Section */}
+      <section id="tools" style={styles.toolsSection}>
+        <div style={styles.toolsInner}>
+          {/* Tab Switcher */}
+          <div style={styles.tabBar}>
+            <button
+              onClick={() => setActiveTab('text')}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: '12px 28px',
-                borderRadius: '8px',
-                background: 'var(--color-primary-600)',
-                color: 'white',
-                fontSize: '15px',
-                fontWeight: 600,
-                textDecoration: 'none',
-                transition: 'background 0.15s',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(37,99,235,0.25)',
+                ...styles.tab,
+                ...(activeTab === 'text' ? styles.tabActive : styles.tabInactive),
               }}
             >
-              Get Started Free
-            </a>
-            <a
-              href="#features"
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+              Text Generation
+            </button>
+            <button
+              onClick={() => setActiveTab('image')}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                padding: '12px 28px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-neutral-300)',
-                background: 'white',
-                color: 'var(--color-neutral-700)',
-                fontSize: '15px',
-                fontWeight: 600,
-                textDecoration: 'none',
-                transition: 'border-color 0.15s',
+                ...styles.tab,
+                ...(activeTab === 'image' ? styles.tabActive : styles.tabInactive),
               }}
             >
-              Learn More
-            </a>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              Image Generation
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div style={styles.tabContent}>
+            {activeTab === 'text' ? <TextGenerator /> : <ImageGenerator />}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section
-        id="features"
-        style={{ padding: '80px 24px', background: 'var(--color-neutral-50)' }}
-      >
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-            <h2
-              style={{
-                fontSize: '32px',
-                fontWeight: 700,
-                letterSpacing: '-0.02em',
-                color: 'var(--color-neutral-900)',
-                marginBottom: '12px',
-              }}
-            >
-              Everything You Need
-            </h2>
-            <p
-              style={{
-                fontSize: '16px',
-                color: 'var(--color-neutral-500)',
-                maxWidth: '500px',
-                margin: '0 auto',
-              }}
-            >
-              A comprehensive suite of tools designed to supercharge your productivity.
-            </p>
-          </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: '24px',
-            }}
-          >
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                style={{
-                  padding: '32px',
-                  borderRadius: '12px',
-                  background: 'white',
-                  border: '1px solid var(--color-neutral-200)',
-                  transition: 'box-shadow 0.2s, border-color 0.2s',
-                }}
-              >
-                <div
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '10px',
-                    background: 'var(--color-primary-50)',
-                    color: 'var(--color-primary-600)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '20px',
-                  }}
-                >
-                  {feature.icon}
-                </div>
-                <h3
-                  style={{
-                    fontSize: '18px',
-                    fontWeight: 600,
-                    color: 'var(--color-neutral-900)',
-                    marginBottom: '8px',
-                  }}
-                >
-                  {feature.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: '14px',
-                    lineHeight: 1.6,
-                    color: 'var(--color-neutral-500)',
-                  }}
-                >
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section
-        id="cta"
-        style={{
-          padding: '80px 24px',
-          background: 'linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%)',
-          color: 'white',
-        }}
-      >
-        <div style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-          <h2
-            style={{
-              fontSize: '32px',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              marginBottom: '12px',
-            }}
-          >
-            Start Building Today
-          </h2>
-          <p
-            style={{
-              fontSize: '16px',
-              lineHeight: 1.6,
-              opacity: 0.85,
-              marginBottom: '32px',
-            }}
-          >
-            Join the waitlist to get early access to Neotoolhub AI tools and workflows.
-          </p>
-          {submitted ? (
-            <div
-              style={{
-                padding: '16px 24px',
-                borderRadius: '8px',
-                background: 'rgba(255,255,255,0.15)',
-                fontSize: '15px',
-                fontWeight: 500,
-              }}
-            >
-              Thanks for signing up! We'll be in touch soon.
+      {/* About Section */}
+      <section id="about" style={styles.aboutSection}>
+        <div style={styles.aboutInner}>
+          <h2 style={styles.aboutTitle}>How It Works</h2>
+          <div style={styles.stepsGrid}>
+            <div style={styles.step}>
+              <div style={styles.stepNumber}>1</div>
+              <h3 style={styles.stepTitle}>Enter a Prompt</h3>
+              <p style={styles.stepText}>Describe what you want to generate in plain language.</p>
             </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                display: 'flex',
-                gap: '8px',
-                maxWidth: '440px',
-                margin: '0 auto',
-              }}
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-                style={{
-                  flex: 1,
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  background: 'rgba(255,255,255,0.15)',
-                  color: 'white',
-                  fontSize: '15px',
-                  outline: 'none',
-                }}
-              />
-              <button
-                type="submit"
-                style={{
-                  padding: '12px 24px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: 'white',
-                  color: 'var(--color-primary-700)',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'opacity 0.15s',
-                }}
-              >
-                Join Waitlist
-              </button>
-            </form>
-          )}
+            <div style={styles.step}>
+              <div style={styles.stepNumber}>2</div>
+              <h3 style={styles.stepTitle}>AI Processes</h3>
+              <p style={styles.stepText}>Our AI models analyze your prompt and generate content.</p>
+            </div>
+            <div style={styles.step}>
+              <div style={styles.stepNumber}>3</div>
+              <h3 style={styles.stepTitle}>Get Results</h3>
+              <p style={styles.stepText}>View, copy, or download your AI-generated content instantly.</p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer
-        style={{
-          padding: '32px 24px',
-          background: 'var(--color-neutral-900)',
-          color: 'var(--color-neutral-400)',
-          textAlign: 'center',
-          fontSize: '14px',
-        }}
-      >
+      <footer style={styles.footer}>
         <p>&copy; {new Date().getFullYear()} Neotoolhub AI. All rights reserved.</p>
       </footer>
     </div>
   )
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  page: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    background: 'var(--color-neutral-50)',
+  },
+  header: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 50,
+    background: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(12px)',
+    borderBottom: '1px solid var(--color-neutral-200)',
+  },
+  headerInner: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '14px 24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  logoGroup: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  logo: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '8px',
+    background: 'linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    fontWeight: 700,
+    fontSize: '16px',
+  },
+  brandName: {
+    fontSize: '20px',
+    fontWeight: 700,
+    color: 'var(--color-neutral-900)',
+    letterSpacing: '-0.02em',
+  },
+  nav: {
+    display: 'flex',
+    gap: '24px',
+  },
+  navLink: {
+    fontSize: '14px',
+    fontWeight: 500,
+    color: 'var(--color-neutral-600)',
+    textDecoration: 'none',
+  },
+  hero: {
+    background: 'linear-gradient(180deg, var(--color-primary-50) 0%, var(--color-neutral-50) 100%)',
+    padding: '64px 24px 48px',
+    textAlign: 'center',
+  },
+  heroInner: {
+    maxWidth: '700px',
+    margin: '0 auto',
+  },
+  badge: {
+    display: 'inline-block',
+    padding: '6px 16px',
+    borderRadius: '9999px',
+    background: 'var(--color-primary-100)',
+    color: 'var(--color-primary-700)',
+    fontSize: '13px',
+    fontWeight: 600,
+    marginBottom: '20px',
+  },
+  heroTitle: {
+    fontSize: 'clamp(32px, 5vw, 48px)',
+    fontWeight: 800,
+    lineHeight: 1.1,
+    letterSpacing: '-0.03em',
+    color: 'var(--color-neutral-900)',
+    marginBottom: '16px',
+  },
+  heroAccent: {
+    color: 'var(--color-primary-600)',
+  },
+  heroSubtitle: {
+    fontSize: '16px',
+    lineHeight: 1.6,
+    color: 'var(--color-neutral-500)',
+    maxWidth: '540px',
+    margin: '0 auto',
+  },
+  toolsSection: {
+    padding: '0 24px 64px',
+  },
+  toolsInner: {
+    maxWidth: '720px',
+    margin: '0 auto',
+  },
+  tabBar: {
+    display: 'flex',
+    gap: '4px',
+    padding: '4px',
+    borderRadius: '10px',
+    background: 'var(--color-neutral-100)',
+    marginBottom: '20px',
+  },
+  tab: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    border: 'none',
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+  },
+  tabActive: {
+    background: 'white',
+    color: 'var(--color-primary-700)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+  },
+  tabInactive: {
+    background: 'transparent',
+    color: 'var(--color-neutral-500)',
+  },
+  tabContent: {
+    minHeight: '200px',
+  },
+  aboutSection: {
+    padding: '64px 24px',
+    background: 'white',
+    borderTop: '1px solid var(--color-neutral-200)',
+  },
+  aboutInner: {
+    maxWidth: '900px',
+    margin: '0 auto',
+    textAlign: 'center',
+  },
+  aboutTitle: {
+    fontSize: '28px',
+    fontWeight: 700,
+    color: 'var(--color-neutral-900)',
+    letterSpacing: '-0.02em',
+    marginBottom: '40px',
+  },
+  stepsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: '32px',
+  },
+  step: {
+    textAlign: 'center',
+  },
+  stepNumber: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    background: 'var(--color-primary-100)',
+    color: 'var(--color-primary-700)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '16px',
+    fontWeight: 700,
+    margin: '0 auto 16px',
+  },
+  stepTitle: {
+    fontSize: '16px',
+    fontWeight: 600,
+    color: 'var(--color-neutral-900)',
+    marginBottom: '8px',
+  },
+  stepText: {
+    fontSize: '14px',
+    lineHeight: 1.5,
+    color: 'var(--color-neutral-500)',
+  },
+  footer: {
+    padding: '32px 24px',
+    background: 'var(--color-neutral-900)',
+    color: 'var(--color-neutral-400)',
+    textAlign: 'center',
+    fontSize: '14px',
+    marginTop: 'auto',
+  },
 }
 
 export default App

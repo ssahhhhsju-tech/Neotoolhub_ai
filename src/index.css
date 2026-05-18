@@ -49,3 +49,21 @@ body {
   background: var(--color-neutral-50);
   color: var(--color-neutral-900);
 }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+textarea:focus,
+input[type="text"]:focus {
+  border-color: var(--color-primary-400);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+@media (max-width: 640px) {
+  :root {
+    font-size: 15px;
+  }
+}
