@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, isConfigured } from '../lib/supabase'
 
 type GenerationType = 'text' | 'image'
 
@@ -29,11 +29,11 @@ export function useAIGeneration(type: GenerationType): UseAIGenerationReturn {
   const generate = useCallback(async (prompt: string) => {
     if (!prompt.trim()) return
 
-    if (!supabase) {
+    if (!isConfigured) {
       setState({
         isLoading: false,
         result: null,
-        error: 'Application is not configured. Supabase connection is missing.',
+        error: 'AI features are not available. Supabase is not configured for this deployment.',
         errorCode: 'MISSING_CONFIG',
       })
       return
@@ -49,12 +49,22 @@ export function useAIGeneration(type: GenerationType): UseAIGenerationReturn {
       })
 
       if (invokeError) {
-        setState({
-          isLoading: false,
-          result: null,
-          error: 'Failed to connect to AI service. Please try again.',
-          errorCode: 'INVOKE_ERROR',
-        })
+        const status = invokeError.context?.status
+        if (status === 401 || status === 403) {
+          setState({
+            isLoading: false,
+            result: null,
+            error: 'Authentication required. Please sign in to use AI features.',
+            errorCode: 'AUTH_REQUIRED',
+          })
+        } else {
+          setState({
+            isLoading: false,
+            result: null,
+            error: 'Failed to connect to AI service. Please try again.',
+            errorCode: 'INVOKE_ERROR',
+          })
+        }
         return
       }
 

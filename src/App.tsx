@@ -1,11 +1,19 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { TextGenerator } from './components/TextGenerator'
 import { ImageGenerator } from './components/ImageGenerator'
+import { isConfigured } from './lib/supabase'
 
 type Tab = 'text' | 'image'
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('text')
+
+  const scrollTo = useCallback((id: string) => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [])
 
   return (
     <div style={styles.page}>
@@ -17,11 +25,27 @@ function App() {
             <span style={styles.brandName}>Neotoolhub</span>
           </div>
           <nav style={styles.nav}>
-            <a href="#tools" style={styles.navLink}>Tools</a>
-            <a href="#about" style={styles.navLink}>About</a>
+            <button onClick={() => scrollTo('tools')} style={styles.navButton}>
+              Tools
+            </button>
+            <button onClick={() => scrollTo('about')} style={styles.navButton}>
+              About
+            </button>
           </nav>
         </div>
       </header>
+
+      {/* Config Warning */}
+      {!isConfigured && (
+        <div style={styles.configBanner}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <span>AI features are unavailable -- Supabase is not configured for this deployment.</span>
+        </div>
+      )}
 
       {/* Hero */}
       <section style={styles.hero}>
@@ -36,6 +60,9 @@ function App() {
             Harness the power of artificial intelligence to generate creative text and stunning
             images. Enter a prompt and let AI do the rest.
           </p>
+          <button onClick={() => scrollTo('tools')} style={styles.heroButton}>
+            Get Started
+          </button>
         </div>
       </section>
 
@@ -159,13 +186,31 @@ const styles: Record<string, React.CSSProperties> = {
   },
   nav: {
     display: 'flex',
-    gap: '24px',
+    gap: '8px',
   },
-  navLink: {
+  navButton: {
+    padding: '6px 14px',
+    borderRadius: '6px',
+    border: 'none',
+    background: 'transparent',
+    color: 'var(--color-neutral-600)',
     fontSize: '14px',
     fontWeight: 500,
-    color: 'var(--color-neutral-600)',
-    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'background 0.15s',
+  },
+  configBanner: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '12px 24px',
+    background: '#fffbeb',
+    borderBottom: '1px solid #fde68a',
+    color: '#92400e',
+    fontSize: '13px',
+    fontWeight: 500,
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   hero: {
     background: 'linear-gradient(180deg, var(--color-primary-50) 0%, var(--color-neutral-50) 100%)',
@@ -202,7 +247,20 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     color: 'var(--color-neutral-500)',
     maxWidth: '540px',
-    margin: '0 auto',
+    margin: '0 auto 28px',
+  },
+  heroButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '12px 28px',
+    borderRadius: '8px',
+    border: 'none',
+    background: 'var(--color-primary-600)',
+    color: 'white',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(37,99,235,0.25)',
   },
   toolsSection: {
     padding: '0 24px 64px',

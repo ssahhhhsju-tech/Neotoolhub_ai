@@ -3,6 +3,8 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
+    { "source": "/assets/:path*", "destination": "/assets/:path*" },
+    { "source": "/:path*.(js|css|svg|png|jpg|ico|woff2|woff|json)", "destination": "/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
