@@ -5,8 +5,8 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undef
 
 const isConfigured = Boolean(supabaseUrl && supabaseAnonKey)
 
-const supabase: SupabaseClient = isConfigured
+const supabase: SupabaseClient | null = isConfigured
   ? createClient(supabaseUrl!, supabaseAnonKey!)
-  : createClient('https://placeholder.supabase.co', 'placeholder-key')
+  : null
 
 export { supabase, isConfigured }

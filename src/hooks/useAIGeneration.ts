@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react'
-import { supabase, isConfigured } from '../lib/supabase'
 
 type GenerationType = 'text' | 'image'
 
@@ -16,6 +15,17 @@ interface UseAIGenerationReturn extends GenerationState {
   reset: () => void
 }
 
+function getEdgeFunctionUrl(type: GenerationType): string | null {
+  const baseUrl = import.meta.env.VITE_SUPABASE_URL
+  if (!baseUrl) return null
+  const fn = type === 'text' ? 'generate-text' : 'generate-image'
+  return `${baseUrl}/functions/v1/${fn}`
+}
+
+function getAnonKey(): string | null {
+  return import.meta.env.VITE_SUPABASE_ANON_KEY || null
+}
+
 export function useAIGeneration(type: GenerationType): UseAIGenerationReturn {
   const [state, setState] = useState<GenerationState>({
     isLoading: false,
@@ -29,11 +39,14 @@ export function useAIGeneration(type: GenerationType): UseAIGenerationReturn {
   const generate = useCallback(async (prompt: string) => {
     if (!prompt.trim()) return
 
-    if (!isConfigured) {
+    const url = getEdgeFunctionUrl(type)
+    const anonKey = getAnonKey()
+
+    if (!url || !anonKey) {
       setState({
         isLoading: false,
         result: null,
-        error: 'AI features are not available. Supabase is not configured for this deployment.',
+        error: 'AI features are unavailable. Required environment variables are not configured.',
         errorCode: 'MISSING_CONFIG',
       })
       return
@@ -43,28 +56,25 @@ export function useAIGeneration(type: GenerationType): UseAIGenerationReturn {
     setState({ isLoading: true, result: null, error: null, errorCode: null })
 
     try {
-      const functionName = type === 'text' ? 'generate-text' : 'generate-image'
-      const { data, error: invokeError } = await supabase.functions.invoke(functionName, {
-        body: { prompt: prompt.trim() },
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${anonKey}`,
+        },
+        body: JSON.stringify({ prompt: prompt.trim() }),
       })
 
-      if (invokeError) {
-        const status = invokeError.context?.status
-        if (status === 401 || status === 403) {
-          setState({
-            isLoading: false,
-            result: null,
-            error: 'Authentication required. Please sign in to use AI features.',
-            errorCode: 'AUTH_REQUIRED',
-          })
-        } else {
-          setState({
-            isLoading: false,
-            result: null,
-            error: 'Failed to connect to AI service. Please try again.',
-            errorCode: 'INVOKE_ERROR',
-          })
-        }
+      const data = await response.json()
+
+      if (!response.ok) {
+        const errorCode = data?.code || 'SERVICE_ERROR'
+        setState({
+          isLoading: false,
+          result: null,
+          error: data?.error || `Request failed with status ${response.status}.`,
+          errorCode,
+        })
         return
       }
 

@@ -1,12 +1,16 @@
 import { useState, useCallback } from 'react'
 import { TextGenerator } from './components/TextGenerator'
 import { ImageGenerator } from './components/ImageGenerator'
-import { isConfigured } from './lib/supabase'
 
 type Tab = 'text' | 'image'
 
+function isAIConfigured(): boolean {
+  return Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY)
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('text')
+  const aiReady = isAIConfigured()
 
   const scrollTo = useCallback((id: string) => {
     const el = document.getElementById(id)
@@ -36,14 +40,14 @@ function App() {
       </header>
 
       {/* Config Warning */}
-      {!isConfigured && (
+      {!aiReady && (
         <div style={styles.configBanner}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
             <line x1="12" y1="9" x2="12" y2="13" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
-          <span>AI features are unavailable -- Supabase is not configured for this deployment.</span>
+          <span>AI generation is unavailable -- required environment variables are not set for this deployment.</span>
         </div>
       )}
 
